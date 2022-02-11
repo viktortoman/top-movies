@@ -15,3 +15,4 @@
     6.1 Run this command with parameter, for example (parameter is page number for the API):
         - php bin/console save-movies 2
         - php bin/console save-movies 3
+    7. Run tests with: "php bin/phpunit" command

@@ -121,6 +121,9 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "symfony/browser-kit": {
+        "version": "v5.4.3"
+    },
     "symfony/cache": {
         "version": "v5.4.3"
     },
@@ -149,6 +152,9 @@
         "version": "v2.5.0"
     },
     "symfony/doctrine-bridge": {
+        "version": "v5.4.3"
+    },
+    "symfony/dom-crawler": {
         "version": "v5.4.3"
     },
     "symfony/dotenv": {

@@ -28,7 +28,7 @@ class MovieController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function list(Request $request): Response
     {
         try {
             $page = $request->get('page') ?? 1;
