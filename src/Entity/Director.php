@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\DirectorRepository;
+use App\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Director
 {
+    use Timestampable;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -41,6 +44,11 @@ class Director
      * @ORM\ManyToOne(targetEntity=Movie::class, inversedBy="Director")
      */
     private $movie;
+
+    public function __construct()
+    {
+        $this->setCreatedAt();
+    }
 
     public function getId(): ?int
     {

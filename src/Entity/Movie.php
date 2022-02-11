@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MovieRepository;
+use App\Traits\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Movie
 {
+    use Timestampable;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -25,7 +28,7 @@ class Movie
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $length;
 
@@ -54,9 +57,16 @@ class Movie
      */
     private $Director;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Genre::class, inversedBy="movies")
+     */
+    private $Genre;
+
     public function __construct()
     {
         $this->Director = new ArrayCollection();
+        $this->Genre = new ArrayCollection();
+        $this->setCreatedAt();
     }
 
     public function getId(): ?int
@@ -162,6 +172,30 @@ class Movie
                 $director->setMovie(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Genre[]
+     */
+    public function getGenre(): Collection
+    {
+        return $this->Genre;
+    }
+
+    public function addGenre(Genre $genre): self
+    {
+        if (!$this->Genre->contains($genre)) {
+            $this->Genre[] = $genre;
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): self
+    {
+        $this->Genre->removeElement($genre);
 
         return $this;
     }

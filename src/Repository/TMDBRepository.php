@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\TMDB;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method TMDB|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,37 +16,55 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TMDBRepository extends ServiceEntityRepository
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TMDB::class);
     }
 
-    // /**
-    //  * @return TMDB[] Returns an array of TMDB objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $movieArray
+     * @return TMDB
+     * @throws ConnectionException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function save($movieArray): TMDB
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $this->_em->getConnection()->beginTransaction();
 
-    /*
-    public function findOneBySomeField($value): ?TMDB
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        try {
+            $TMDB = new TMDB();
+
+            $TMDB->setUniqueId($movieArray['id'] ?? '');
+            $TMDB->setVoteAverage($movieArray['vote_average'] ?? '');
+            $TMDB->setVoteCount($movieArray['vote_count'] ?? '');
+
+            $this->_em->persist($TMDB);
+            $this->_em->flush();
+
+            $this->_em->getConnection()->commit();
+
+            return $TMDB;
+        } catch (Exception $e) {
+            $this->_em->getConnection()->rollBack();
+            throw $e;
+        }
     }
-    */
+
+    /**
+     * @param TMDB $TMDB
+     * @return array
+     */
+    public function normalize(TMDB $TMDB): array
+    {
+        return [
+            'uniqueId' => $TMDB->getUniqueId(),
+            'voteAverage' => $TMDB->getVoteAverage(),
+            'voteCount' => $TMDB->getVoteCount(),
+            'createdAt' => $TMDB->getCreatedAt()->format('Y-m-d H:i:s')
+        ];
+    }
 }

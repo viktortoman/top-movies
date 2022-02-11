@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TMDBRepository;
+use App\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TMDB
 {
+    use Timestampable;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -33,9 +36,14 @@ class TMDB
     private $voteCount;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $url;
+
+    public function __construct()
+    {
+        $this->setCreatedAt();
+    }
 
     public function getId(): ?int
     {

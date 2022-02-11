@@ -5,7 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.tmdb_api_url: '%env(resolve:TMDB_API_URL)%'
-    app.tmdb_api_key: '%env(resolve:TMDB_API_KEY)%'
+    app.tmdb_api_key_v3: '%env(resolve:TMDB_API_KEY_V3)%'
+    app.tmdb_api_key_v4: '%env(resolve:TMDB_API_KEY_V4)%'
 
 services:
     # default configuration for services in *this* file
