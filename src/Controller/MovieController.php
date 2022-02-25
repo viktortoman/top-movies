@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/movie", name="movie")
+ * @Route("/api/movie", name="movie_")
  */
 class MovieController extends AbstractController
 {
@@ -24,7 +24,7 @@ class MovieController extends AbstractController
     }
 
     /**
-     * @Route("/list", name="movie_list")
+     * @Route("/list", name="list")
      * @param Request $request
      * @return Response
      */
@@ -41,13 +41,14 @@ class MovieController extends AbstractController
     }
 
     /**
-     * @Route("/saved-list", name="movie_saved_list")
+     * @Route("/saved-list", name="saved_list")
      * @return Response
      */
-    public function savedList(): Response
+    public function savedList(Request $request): Response
     {
         try {
-            $response = $this->movieApiService->getSavedList();
+            $page = $request->get('page') ?? 1;
+            $response = $this->movieApiService->getSavedList($page);
 
             return new JsonResponse($response);
         } catch (Exception $e) {
@@ -56,7 +57,7 @@ class MovieController extends AbstractController
     }
 
     /**
-     * @Route("/save-list", name="movie_save_list")
+     * @Route("/save-list", name="save_list")
      * @param Request $request
      * @return Response
      */
@@ -67,6 +68,24 @@ class MovieController extends AbstractController
             $response = $this->movieApiService->saveList($page);
 
             return new JsonResponse($response);
+        } catch (Exception $e) {
+            throw new BadRequestHttpException($e->getMessage(), null, $e->getCode());
+        }
+    }
+
+    /**
+     * @Route("/{id}", name="get_movie")
+     * @param int $id
+     * @return Response
+     */
+    public function getMovie(int $id): Response
+    {
+        try {
+            $response = $this->movieApiService->getMovie($id);
+
+            return new JsonResponse([
+                'result' => $response
+            ]);
         } catch (Exception $e) {
             throw new BadRequestHttpException($e->getMessage(), null, $e->getCode());
         }
